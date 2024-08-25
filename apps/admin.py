@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.admin import StackedInline
 from django.utils.html import format_html
-from apps.models import Category, Product, ProductImage, User, SiteSettings
+
+from apps.models import Category, Product, ProductImage, User, SiteSettings, NewOrder, Order
 
 admin.site.site_header = "Alijahon Admin"
 admin.site.index_title = "Welcome to Alijahon Portal"
@@ -37,6 +38,24 @@ class ProductAdmin(admin.ModelAdmin):
     ordering = '-created_at',
     list_filter = 'quantity',
 
+    fieldsets = (
+        ("Page 1",
+         {"fields":
+              ('name',
+               "description",
+               "price",
+               "payment",
+               "quantity",
+               )
+          }),
+        ("Page 2",
+         {"fields": (
+             'for_stream_price',
+             'tg_id',
+             'category')}),
+
+    )
+
     @admin.display(empty_value="?")
     def is_exists(self, obj):
         icon_url = 'https://img.icons8.com/?size=100&id=9fp9k4lPT8us&format=png&color=000000'
@@ -48,3 +67,11 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(admin.ModelAdmin):
     pass
+
+
+#
+@admin.register(NewOrder)
+class NewOrderAdmin(admin.ModelAdmin):  # new orders list
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(status=Order.StatusType.NEW)

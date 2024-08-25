@@ -156,5 +156,8 @@ class SiteSettings(BaseModel):
     end_time = DateTimeField()
 
 
-
-
+class NewOrder(Order):
+    class Meta:
+        proxy = True
+        verbose_name = 'New Order'
+        verbose_name_plural = 'News Orders'
